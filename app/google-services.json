@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "517843721056",
+    "project_id": "a-reader",
+    "storage_bucket": "a-reader.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517843721056:android:8b3e992b4dea1f9d8ddc05",
+        "android_client_info": {
+          "package_name": "com.mahan.compose.areader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "517843721056-kk5p98g2abj5cnkrltj35osul6dkqg2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrmiBdR5cv70P_fW2E9N3CUMWC5aGBojQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "517843721056-kk5p98g2abj5cnkrltj35osul6dkqg2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
