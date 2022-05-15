@@ -78,6 +78,12 @@ dependencies {
     // JSON Converter
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    // Jetpack Compose ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+
+    // Jetpack Navigation Compose Animation
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.24.1-alpha"
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"

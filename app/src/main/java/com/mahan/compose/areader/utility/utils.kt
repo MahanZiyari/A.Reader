@@ -1,5 +1,8 @@
 package com.mahan.compose.areader.utility
 
-fun test() {
-    print("Test")
+import android.content.Context
+import android.widget.Toast
+
+fun toastMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
