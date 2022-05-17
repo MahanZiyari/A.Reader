@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.KeyboardType
 fun EmailInputField(
     modifier: Modifier = Modifier,
     emailState: String,
+    enabled: Boolean,
     onEmailChange: (String) -> Unit,
     onKeyboardActions: KeyboardActions
 ) {
@@ -25,5 +26,6 @@ fun EmailInputField(
         keyboardType = KeyboardType.Email,
         imeAction = ImeAction.Next,
         onAction = onKeyboardActions,
+        enabled = enabled
     )
 }

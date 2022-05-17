@@ -55,6 +55,7 @@ fun UserForm(
 
         EmailInputField(
             emailState = email.value,
+            enabled = !isLoading,
             onEmailChange = {
                 email.value = it
             },
@@ -72,6 +73,7 @@ fun UserForm(
                 .padding(4.dp)
                 .fillMaxWidth(),
             passwordStat = password.value,
+            enabled = !isLoading,
             onPasswordChange = {
                 password.value = it
             },

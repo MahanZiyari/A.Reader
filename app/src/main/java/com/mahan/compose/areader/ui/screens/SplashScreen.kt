@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.mahan.compose.areader.ui.components.AppLogo
 import com.mahan.compose.areader.ui.navigation.Destination
 import kotlinx.coroutines.delay
@@ -41,9 +42,17 @@ fun SplashScreen(navController: NavHostController) {
         )
 
         delay(2000)
-        //Todo: Later check for authenticated user
-        navController.navigate(route = Destination.LoginScreen.name) {
+        /*navController.navigate(route = Destination.LoginScreen.name) {
             popUpTo(0)
+        }*/
+        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
+            navController.navigate(route = Destination.LoginScreen.name) {
+                popUpTo(0)
+            }
+        } else {
+            navController.navigate(route = Destination.HomeScreen.name) {
+                popUpTo(0)
+            }
         }
     }
     Column(

@@ -19,6 +19,7 @@ import com.mahan.compose.areader.R
 fun PasswordInputField(
     modifier: Modifier = Modifier,
     passwordStat: String,
+    enabled: Boolean,
     onKeyboardActions: KeyboardActions,
     onPasswordChange: (String) -> Unit
 ) {
@@ -36,6 +37,7 @@ fun PasswordInputField(
         label = "Password",
         leadingIcon = Icons.Default.Lock,
         isSingleLine = true,
+        enabled = enabled,
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done,
         visualTransformation = visualTransformation,

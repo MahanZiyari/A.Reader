@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.mahan.compose.areader.ui.screens.SplashScreen
 import com.mahan.compose.areader.ui.screens.detail.BookDetailsScreen
+import com.mahan.compose.areader.ui.screens.home.HomeScreen
 import com.mahan.compose.areader.ui.screens.login.LoginScreen
 import com.mahan.compose.areader.ui.screens.search.BookSearchScreen
 import com.mahan.compose.areader.ui.screens.stats.StatsScreen
@@ -55,5 +56,9 @@ fun Navigation() {
             StatsScreen(navController = navController)
         }
 
+        //StatsScreen
+        composable(route = Destination.HomeScreen.name) {
+            HomeScreen(navController = navController)
+        }
     }
 }

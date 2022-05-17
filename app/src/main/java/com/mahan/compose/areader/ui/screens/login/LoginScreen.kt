@@ -1,6 +1,5 @@
 package com.mahan.compose.areader.ui.screens.login
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -21,11 +20,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.mahan.compose.areader.ui.components.AppLogo
 import com.mahan.compose.areader.ui.components.UserForm
+import com.mahan.compose.areader.ui.navigation.Destination
 
 @ExperimentalComposeUiApi
 @Composable
 fun LoginScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val isCreateAccount = rememberSaveable {
         mutableStateOf(false)
@@ -47,14 +48,24 @@ fun LoginScreen(
                 .padding(vertical = 50.dp, horizontal = 16.dp)
                 .animateContentSize(
                     animationSpec = tween(
-                        durationMillis = 1500,
+                        durationMillis = 500,
                         easing = LinearOutSlowInEasing
                     )
                 ),
-            isLoading = false,
+            isLoading = viewModel.loading.value!!,
             isCreateAccount = isCreateAccount.value,
             onFinished = { email, password ->
-                Log.d("fuck", "Email: $email  password: $password")
+                if (isCreateAccount.value) {
+                    // Sign up
+                    viewModel.createUserWithEmailAndPassword(email, password) {
+                        navController.navigate(route = Destination.HomeScreen.name)
+                    }
+                } else {
+                    // login
+                    viewModel.signInWithEmailAndPassword(email, password) {
+                        navController.navigate(route = Destination.HomeScreen.name)
+                    }
+                }
             },
             onSwitchForm = {
                 isCreateAccount.value = !isCreateAccount.value
