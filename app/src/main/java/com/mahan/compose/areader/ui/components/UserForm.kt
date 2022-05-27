@@ -91,6 +91,7 @@ fun UserForm(
             isLoading = isLoading,
             isInputsValid = isInputValid
         ) {
+            keyboardController?.hide()
             onFinished(email.value.trim(), password.value.trim())
         }
 
