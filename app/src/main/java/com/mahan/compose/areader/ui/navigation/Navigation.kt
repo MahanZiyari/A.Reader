@@ -3,6 +3,7 @@ package com.mahan.compose.areader.ui.navigation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -11,6 +12,7 @@ import com.mahan.compose.areader.ui.screens.detail.BookDetailsScreen
 import com.mahan.compose.areader.ui.screens.home.HomeScreen
 import com.mahan.compose.areader.ui.screens.login.LoginScreen
 import com.mahan.compose.areader.ui.screens.search.BookSearchScreen
+import com.mahan.compose.areader.ui.screens.search.BookSearchViewModel
 import com.mahan.compose.areader.ui.screens.stats.StatsScreen
 import com.mahan.compose.areader.ui.screens.update.BookUpdateScreen
 
@@ -38,7 +40,8 @@ fun Navigation() {
 
         //SearchScreen
         composable(route = Destination.SearchScreen.name) {
-            BookSearchScreen(navController = navController)
+            val searchViewModel = hiltViewModel<BookSearchViewModel>()
+            BookSearchScreen(navController = navController, viewModel = searchViewModel)
         }
 
         //UpdateScreen

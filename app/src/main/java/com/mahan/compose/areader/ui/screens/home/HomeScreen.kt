@@ -20,6 +20,7 @@ import com.mahan.compose.areader.ui.components.DrawerContent
 import com.mahan.compose.areader.ui.components.FAB
 import com.mahan.compose.areader.ui.components.HomeScreenTopAppBar
 import com.mahan.compose.areader.ui.components.ListCard
+import com.mahan.compose.areader.ui.navigation.Destination
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,7 +52,7 @@ fun HomeScreen(
                 icon = Icons.Default.Add,
                 tint = MaterialTheme.colors.onPrimary
             ) {
-                //TODO : Implement FAB functionality -> navigate to search screen
+                navController.navigate(route = Destination.SearchScreen.name)
             }
         },
         drawerContent = {
