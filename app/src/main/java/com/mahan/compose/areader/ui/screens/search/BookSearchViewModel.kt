@@ -22,15 +22,17 @@ class BookSearchViewModel @Inject constructor(private val repository: BookReposi
     var list: List<Item> by mutableStateOf(listOf())
     var isLoading: Boolean by mutableStateOf(true)
 
+    var searchQuery = mutableStateOf("")
+
     init {
         loadBooks()
     }
 
     private fun loadBooks() {
-        searchBooks("flutter")
+        searchBooks("Android")
     }
 
-    fun searchBooks(query: String) {
+    fun searchBooks(query: String = searchQuery.value) {
         viewModelScope.launch(Dispatchers.Default) {
 
             if (query.isEmpty()){
@@ -41,6 +43,7 @@ class BookSearchViewModel @Inject constructor(private val repository: BookReposi
                     is Resource.Success -> {
                         list = response.data!!
                         if (list.isNotEmpty()) isLoading = false
+                        searchQuery.value = ""
                     }
                     is Resource.Error -> {
                         isLoading = false

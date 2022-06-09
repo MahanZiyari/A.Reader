@@ -80,7 +80,7 @@ fun InputField(
             fontSize = 18.sp,
             color = MaterialTheme.colors.onBackground
         ),
-        shape = RoundedCornerShape(size = 5.dp),
+        shape = RoundedCornerShape(size = 10.dp),
         visualTransformation = visualTransformation,
         leadingIcon = {
             Icon(
