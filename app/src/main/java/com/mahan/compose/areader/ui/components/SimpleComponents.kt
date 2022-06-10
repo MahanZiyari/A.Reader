@@ -180,15 +180,6 @@ fun HomeScreenTopAppBar(
     )
 }
 
-/*@Preview
-@Composable
-private fun HomeScreenTopAppBarPreview() {
-    HomeScreenTopAppBar(
-        title = "A.reader",
-        navController = rememberNavController(),
-        navigationButtonOnClick = {}
-    )
-}*/
 
 
 @Composable
@@ -212,19 +203,6 @@ fun FAB(
     }
 }
 
-
-/*
-@Preview
-@Composable
-private fun HomeScreenFABPreview() {
-    FAB(
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        icon = Icons.Default.Add,
-        tint = MaterialTheme.colors.onPrimary
-    ) {
-
-    }
-}*/
 
 
 

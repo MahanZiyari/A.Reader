@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SearchScreenTopAppBar(
+fun SimpleAppBar(
     modifier: Modifier = Modifier,
     title: String,
     onNavigateBack: () -> Unit,
@@ -37,7 +37,7 @@ fun SearchScreenTopAppBar(
 @Preview
 @Composable
 private fun Preview() {
-    SearchScreenTopAppBar(title = "Search Screen") {
+    SimpleAppBar(title = "Search Screen") {
 
     }
 }

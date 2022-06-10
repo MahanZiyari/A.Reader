@@ -4,8 +4,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.mahan.compose.areader.ui.screens.SplashScreen
 import com.mahan.compose.areader.ui.screens.detail.BookDetailsScreen
@@ -50,8 +52,21 @@ fun Navigation() {
         }
 
         //DetailScreen
-        composable(route = Destination.DetailScreen.name) {
-            BookDetailsScreen(navController = navController)
+        val detailsScreenBasicRoute = Destination.DetailScreen.name
+        composable(
+            route = "$detailsScreenBasicRoute/{bookId}",
+            arguments = listOf(
+                navArgument(
+                    name = "bookId",
+                ) { type = NavType.StringType }
+            )
+        ) { BackStackEntry ->
+            BackStackEntry.arguments?.getString("bookId").let { bookId ->
+                BookDetailsScreen(
+                    navController = navController,
+                    selectedBookId = bookId.toString()
+                )
+            }
         }
 
         //StatsScreen

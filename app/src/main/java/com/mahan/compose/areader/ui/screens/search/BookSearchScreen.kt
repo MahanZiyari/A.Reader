@@ -22,7 +22,8 @@ import androidx.navigation.NavHostController
 import com.mahan.compose.areader.model.Item
 import com.mahan.compose.areader.ui.components.BookItem
 import com.mahan.compose.areader.ui.components.InputField
-import com.mahan.compose.areader.ui.components.SearchScreenTopAppBar
+import com.mahan.compose.areader.ui.components.SimpleAppBar
+import com.mahan.compose.areader.ui.navigation.Destination
 import com.mahan.compose.areader.utility.toastMessage
 
 @ExperimentalComposeUiApi
@@ -35,7 +36,7 @@ fun BookSearchScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            SearchScreenTopAppBar(
+            SimpleAppBar(
                 title = "Search Books",
                 onNavigateBack = {
                     navController.popBackStack()
@@ -105,7 +106,10 @@ private fun ScreenContent(
             ) {
                 items(listOfBooks) { item ->
                     BookItem(book = item) { bookId ->
-                        toastMessage(context, "Selected book: $bookId")
+                        //toastMessage(context, "Selected book: $bookId")
+                        navController.navigate(
+                            route = Destination.DetailScreen.name.plus("/$bookId")
+                        )
                     }
                 }
             }
