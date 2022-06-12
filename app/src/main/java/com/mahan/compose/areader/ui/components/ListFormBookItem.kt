@@ -44,7 +44,7 @@ fun BookItem(
             horizontalArrangement = Arrangement.Start
         ) {
             val imageUrl =
-                "https:".plus(book.volumeInfo.imageLinks.smallThumbnail.substringAfter(':'))
+                "https:".plus(book.volumeInfo.imageLinks?.smallThumbnail?.substringAfter(':'))
             Image(
                 modifier = Modifier
                     .width(80.dp)

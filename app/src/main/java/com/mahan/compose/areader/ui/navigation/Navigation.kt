@@ -1,6 +1,7 @@
 package com.mahan.compose.areader.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,6 +19,7 @@ import com.mahan.compose.areader.ui.screens.search.BookSearchViewModel
 import com.mahan.compose.areader.ui.screens.stats.StatsScreen
 import com.mahan.compose.areader.ui.screens.update.BookUpdateScreen
 
+@ExperimentalMaterialApi
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable

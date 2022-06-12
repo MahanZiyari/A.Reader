@@ -1,29 +1,40 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.mahan.compose.areader.ui.screens.detail
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.mahan.compose.areader.data.Resource
 import com.mahan.compose.areader.model.Item
 import com.mahan.compose.areader.ui.components.SimpleAppBar
+import com.mahan.compose.areader.ui.components.StaticRatingBar
 
+@ExperimentalMaterialApi
 @Composable
 fun BookDetailsScreen(
     navController: NavHostController,
@@ -61,6 +72,7 @@ fun BookDetailsScreen(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 private fun ScreenContent(
     navController: NavHostController,
@@ -85,10 +97,10 @@ private fun ScreenContent(
                 .padding(6.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            val thumbnailUrl =
-                "https:".plus(book.volumeInfo.imageLinks.thumbnail.substringAfter(':'))
+            val thumbnailUrl: String? =
+                "https:".plus(book.volumeInfo.imageLinks?.thumbnail?.substringAfter(':'))
             Image(
-                painter = rememberImagePainter(data = thumbnailUrl),
+                painter = rememberImagePainter(data = thumbnailUrl ?: ""),
                 contentDescription = "Book Image",
                 modifier = Modifier
                     .width(120.dp)
@@ -134,10 +146,44 @@ private fun ScreenContent(
 
 
                 // Rating Stars
-                // TODO: Implement Star RatingBar
+                if (book.volumeInfo.averageRating > 0) {
+                    StaticRatingBar(
+                        modifier = Modifier.padding(top = 14.dp),
+                        value = book.volumeInfo.averageRating.toInt(),
+                        starSize = 20.dp
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 10.dp),
+                        text = "Not Rated",
+                        overflow = TextOverflow.Clip,
+                        style = MaterialTheme.typography.caption,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
 
                 // Categories
-                // TODO Implement Chips for Categories
+                /*book.volumeInfo.categories?.let {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        items(it) { string ->
+                            Chip(
+                                onClick = { *//*TODO*//* },
+                                colors = ChipDefaults.chipColors(
+                                    backgroundColor = Color(0xff4976dd)
+                                ),
+                                border = BorderStroke(
+                                    width = 0.75.dp,
+                                    color = Color.DarkGray
+                                )
+                            ) {
+                                Text(text = string)
+                            }
+                        }
+                    }
+                }*/
             }
         }// End of Info Section
 
@@ -160,6 +206,47 @@ private fun ScreenContent(
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 18.sp
             )
+        }
+
+
+        // Book Description
+        var textExpanded by remember {
+            mutableStateOf(false)
+        }
+
+        val cleanDescription = HtmlCompat.fromHtml(book.volumeInfo.description, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 8.dp)
+                .animateContentSize(
+                    animationSpec = tween(
+                        durationMillis = 200,
+                        easing = LinearEasing
+                    )
+                ),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            LazyColumn() {
+                item {
+                    Text(
+                        text = cleanDescription + "\n",
+                        textAlign = TextAlign.Start,
+                        maxLines = if (textExpanded) 30 else 3,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+
+                    Text(
+                        text = if (textExpanded) "Read Less" else "Read More",
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colors.secondary,
+                        modifier = Modifier.clickable {
+                            textExpanded = !textExpanded
+                        }
+                    )
+                }
+            }
         }
     }
 }
