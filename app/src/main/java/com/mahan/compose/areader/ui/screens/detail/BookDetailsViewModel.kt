@@ -9,5 +9,9 @@ import javax.inject.Inject
 class BookDetailsViewModel @Inject constructor(private val repository: BookRepository) :
     ViewModel() {
 
-        suspend fun getBookInfo(bookId: String) = repository.getBookInfo(bookId)
+    suspend fun getBookInfo(bookId: String) = repository.getBookInfo(bookId)
+
+
+
+
 }

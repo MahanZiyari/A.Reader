@@ -29,8 +29,11 @@ import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mahan.compose.areader.data.Resource
 import com.mahan.compose.areader.model.Item
+import com.mahan.compose.areader.model.MBook
 import com.mahan.compose.areader.ui.components.SimpleAppBar
 import com.mahan.compose.areader.ui.components.StaticRatingBar
 
@@ -191,6 +194,21 @@ private fun ScreenContent(
         Button(
             onClick = {
                 //TODO Implement Save to Firestore
+                val mBook = MBook(
+                    title = book.volumeInfo.title,
+                    authors = book.volumeInfo.authors.toString(),
+                    description = book.volumeInfo.description,
+                    categories = book.volumeInfo.categories.toString(),
+                    notes = "",
+                    photoUrl = book.volumeInfo.imageLinks?.thumbnail,
+                    publishedDate = book.volumeInfo.publishedDate,
+                    pageCount = book.volumeInfo.pageCount.toString(),
+                    rating = book.volumeInfo.averageRating.toDouble(),
+                    googleBookId = book.id,
+                    userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                )
+
+                saveToFirebase(book, navController = navController)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -214,7 +232,9 @@ private fun ScreenContent(
             mutableStateOf(false)
         }
 
-        val cleanDescription = HtmlCompat.fromHtml(book.volumeInfo.description, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+        val cleanDescription =
+            HtmlCompat.fromHtml(book.volumeInfo.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                .toString()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -248,5 +268,26 @@ private fun ScreenContent(
                 }
             }
         }
+    }
+}
+
+fun saveToFirebase(book: Item, navController: NavHostController) {
+    val db = FirebaseFirestore.getInstance()
+    val dbCollection = db.collection("books")
+
+    if (book.toString().isNotEmpty()) {
+        dbCollection.add(book)
+            .addOnSuccessListener { documentRef ->
+                val docId = documentRef.id
+                dbCollection.document(docId)
+                    .update(hashMapOf("id" to docId) as Map<String, Any>)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) navController.popBackStack()
+                    }
+                    .addOnFailureListener {
+                        Log.w("Error", "SaveToFirebase:  Error updating doc", it)
+                    }
+
+            }
     }
 }
