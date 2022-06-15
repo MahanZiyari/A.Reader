@@ -1,11 +1,18 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.mahan.compose.areader.ui.screens.home
 
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
@@ -13,23 +20,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.mahan.compose.areader.model.MBook
 import com.mahan.compose.areader.ui.components.DrawerContent
 import com.mahan.compose.areader.ui.components.FAB
+import com.mahan.compose.areader.ui.components.GridBookItem
 import com.mahan.compose.areader.ui.components.HomeScreenTopAppBar
-import com.mahan.compose.areader.ui.components.ListCard
 import com.mahan.compose.areader.ui.navigation.Destination
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
 
     val scaffoldState = rememberScaffoldState()
     val drawerCoroutine = rememberCoroutineScope()
+
+    var listOfBooks: List<MBook> = emptyList()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+
+    if (!viewModel.data.value.data.isNullOrEmpty()) {
+        listOfBooks = viewModel.data.value.data!!.toList().filter { mBook ->
+            mBook.userId == currentUser?.uid.toString()
+        }
+
+        Log.d("Books", "HomeContent: ${listOfBooks.toString()}")
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -68,20 +90,27 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = "Active user: ${
-                    FirebaseAuth.getInstance().currentUser?.email?.substringBefore("@")
-                }"
-            )
+            //HomeScreen Content
+            HomeScreenContent(navController = navController, listOfBooks = listOfBooks)
+        }
+    }
+}
 
-            ListCard(
-                book = MBook(
-                    id = "abc",
-                    title = "Hello Compose",
-                    authors = "someone",
-                    notes = "dsadsfdsgd"
-                )
-            )
+@Composable
+private fun HomeScreenContent(navController: NavHostController, listOfBooks: List<MBook>) {
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(6.dp)
+    ) {
+        items(listOfBooks) {
+            GridBookItem(
+                book = it,
+                modifier = Modifier.padding(8.dp)
+            ) {
+
+            }
         }
     }
 }

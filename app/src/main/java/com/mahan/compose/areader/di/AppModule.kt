@@ -1,6 +1,8 @@
 package com.mahan.compose.areader.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mahan.compose.areader.network.GoogleBookAPI
+import com.mahan.compose.areader.repository.FireRepository
 import com.mahan.compose.areader.utility.Constants
 import dagger.Module
 import dagger.Provides
@@ -23,4 +25,9 @@ object AppModule {
             .build()
             .create(GoogleBookAPI::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideFireBookRepository() =
+        FireRepository(queryBook = FirebaseFirestore.getInstance().collection("books"))
 }

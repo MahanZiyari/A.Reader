@@ -191,9 +191,9 @@ private fun ScreenContent(
         }// End of Info Section
 
         // Add to collection Button
+        //TODO : if book is already in user bookshelf then show disabled outline button
         Button(
             onClick = {
-                //TODO Implement Save to Firestore
                 val mBook = MBook(
                     title = book.volumeInfo.title,
                     authors = book.volumeInfo.authors.toString(),
@@ -208,7 +208,7 @@ private fun ScreenContent(
                     userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
                 )
 
-                saveToFirebase(book, navController = navController)
+                saveToFirebase(mBook, navController = navController)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -271,7 +271,7 @@ private fun ScreenContent(
     }
 }
 
-fun saveToFirebase(book: Item, navController: NavHostController) {
+fun saveToFirebase(book: MBook, navController: NavHostController) {
     val db = FirebaseFirestore.getInstance()
     val dbCollection = db.collection("books")
 
