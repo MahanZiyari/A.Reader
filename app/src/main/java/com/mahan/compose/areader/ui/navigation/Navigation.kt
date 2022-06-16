@@ -50,8 +50,19 @@ fun Navigation() {
         }
 
         //UpdateScreen
-        composable(route = Destination.UpdateScreen.name) {
-            BookUpdateScreen(navController = navController)
+        val updateScreenBasicRoute = Destination.UpdateScreen.name
+        composable(
+            route = "$updateScreenBasicRoute/{bookItemId}",
+            arguments = listOf(
+                navArgument(
+                    name = "bookItemId",
+                ) { type = NavType.StringType }
+            )
+        ) { navBackStackEntry ->
+
+            navBackStackEntry.arguments?.getString("bookItemId").let {
+                BookUpdateScreen(navController = navController, bookItemId = it.toString())
+            }
         }
 
         //DetailScreen

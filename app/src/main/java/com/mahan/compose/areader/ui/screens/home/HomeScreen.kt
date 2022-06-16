@@ -16,8 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,19 +37,30 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
 
+    LaunchedEffect(key1 = true) {
+        viewModel.getAllBooksFromDatabase()
+    }
+
     val scaffoldState = rememberScaffoldState()
     val drawerCoroutine = rememberCoroutineScope()
 
-    var listOfBooks: List<MBook> = emptyList()
+    //var listOfBooks: List<MBook> = emptyList()
     val currentUser = FirebaseAuth.getInstance().currentUser
 
-    if (!viewModel.data.value.data.isNullOrEmpty()) {
-        listOfBooks = viewModel.data.value.data!!.toList().filter { mBook ->
-            mBook.userId == currentUser?.uid.toString()
-        }
+    val allBookInCollection by viewModel.data
 
-        Log.d("Books", "HomeContent: ${listOfBooks.toString()}")
+    val listOfBooks = remember(key1 = allBookInCollection) {
+        if (!allBookInCollection.data.isNullOrEmpty()) {
+            viewModel.data.value.data!!.toList().filter { mBook ->
+                mBook.userId == currentUser?.uid.toString()
+            }
+        } else {
+            emptyList()
+        }
     }
+
+    //Log.d("Books", "HomeContent: ${listOfBooks.last()}")
+
 
     Scaffold(
         modifier = Modifier
@@ -102,15 +112,17 @@ private fun HomeScreenContent(navController: NavHostController, listOfBooks: Lis
         cells = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .padding(6.dp)
+            .padding(6.dp),
     ) {
-        items(listOfBooks) {
+        items(listOfBooks) { mBook ->
             GridBookItem(
-                book = it,
-                modifier = Modifier.padding(8.dp)
-            ) {
-
-            }
+                book = mBook,
+                modifier = Modifier.padding(8.dp),
+                onClicked = {
+                    Log.d("Home", "Are equal? ${it == mBook.googleBookId}")
+                    navController.navigate(route = Destination.UpdateScreen.name + "/$it")
+                }
+            )
         }
     }
 }

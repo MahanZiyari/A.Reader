@@ -52,7 +52,7 @@ fun InputField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    leadingIcon: ImageVector,
+    leadingIcon: ImageVector?,
     trailingIcon: Int? = null,
     onTrailingIconClicked: () -> Unit = {},
     enabled: Boolean = true,
@@ -83,11 +83,13 @@ fun InputField(
         shape = RoundedCornerShape(size = 10.dp),
         visualTransformation = visualTransformation,
         leadingIcon = {
-            Icon(
-                imageVector = leadingIcon,
-                contentDescription = "leading Icon",
-                tint = Color.LightGray
-            )
+            leadingIcon?.let {
+                Icon(
+                    imageVector = leadingIcon,
+                    contentDescription = "leading Icon",
+                    tint = Color.LightGray
+                )
+            }
         },
         trailingIcon = {
             trailingIcon?.let {

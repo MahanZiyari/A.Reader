@@ -44,7 +44,7 @@ fun GridBookItem(
             .width(202.dp)
             .clip(RoundedCornerShape(30.dp))
             .clickable {
-                onClicked(book.googleBookId!!)
+                onClicked(book.googleBookId.toString())
             },
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 6.dp,
@@ -108,7 +108,8 @@ fun GridBookItem(
                 text = book.authors!!,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding(vertical = 4.dp, horizontal = 8.dp),
+                maxLines = 1
             )
 
             Row(
