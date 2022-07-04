@@ -19,6 +19,7 @@ import com.mahan.compose.areader.ui.screens.search.BookSearchScreen
 import com.mahan.compose.areader.ui.screens.search.BookSearchViewModel
 import com.mahan.compose.areader.ui.screens.stats.StatsScreen
 import com.mahan.compose.areader.ui.screens.update.BookUpdateScreen
+import com.mahan.compose.areader.ui.screens.update.UpdateScreenViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalComposeUiApi
@@ -61,6 +62,7 @@ fun Navigation() {
         ) { navBackStackEntry ->
 
             navBackStackEntry.arguments?.getString("bookItemId").let {
+                val updateScreenViewModel = hiltViewModel<UpdateScreenViewModel>()
                 BookUpdateScreen(navController = navController, bookItemId = it.toString())
             }
         }
