@@ -16,6 +16,8 @@ class UpdateScreenViewModel @Inject constructor(private val repository: FireRepo
 
     var selectedBook: MutableState<MBook?> = mutableStateOf(null)
 
+    var openDialog = mutableStateOf(false)
+
     init {
     }
 

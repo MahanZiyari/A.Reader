@@ -57,7 +57,6 @@ fun BookUpdateScreen(
         }
     }
 
-    updateScreenViewModel.selectedBook.value = book
 
     Scaffold(
         modifier = Modifier
@@ -68,12 +67,17 @@ fun BookUpdateScreen(
                     navController.popBackStack()
                 },
                 onSaveClicked = { /*TODO*/ },
-                onDeleteClicked = {}
+                onDeleteClicked = {
+                    updateScreenViewModel.openDialog.value = true
+                }
             )
         }
     ) {
-        updateScreenViewModel.selectedBook.value?.let {
-            Content(navController = navController, viewModel = viewModel, currentBook = it)
+        book?.let {
+            updateScreenViewModel.selectedBook.value = it
+            Content(navController = navController,
+                viewModel = updateScreenViewModel,
+                currentBook = it)
         }
     }
 }
@@ -82,22 +86,26 @@ fun BookUpdateScreen(
 @Composable
 private fun Content(
     navController: NavHostController,
-    viewModel: HomeScreenViewModel,
+    viewModel: UpdateScreenViewModel,
     currentBook: MBook,
 ) {
 
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
     var bookNoteTextState by remember {
         mutableStateOf(if (currentBook.notes.toString()
                 .isNotEmpty()
         ) currentBook.notes else "No thought available :)")
     }
 
+    //val bookNoteTextState by viewModel.noteTextState
+
     val isNoteValid = remember(key1 = bookNoteTextState) {
         bookNoteTextState?.trim()?.isNotEmpty()
     }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     var isStartedReading by remember {
         mutableStateOf(false)
@@ -122,6 +130,7 @@ private fun Content(
             value = bookNoteTextState!!,
             onValueChange = {
                 bookNoteTextState = it
+                //viewModel.updateNoteTextState(it)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,13 +198,14 @@ private fun Content(
         }
 
         // -------------
-        Spacer(modifier = Modifier.padding(bottom = 15.dp))
+        //Spacer(modifier = Modifier.padding(bottom = 15.dp))
 
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp)
+                .padding(6.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             val changedNotes = currentBook.notes != bookNoteTextState
@@ -212,7 +222,7 @@ private fun Content(
                 "started_reading_at" to isStartedTimeStamp,
                 "notes" to bookNoteTextState).toMap()
 
-            OutlinedButton(
+            Button(
                 onClick = {
                     if (bookUpdate) {
                         FirebaseFirestore.getInstance()
@@ -230,36 +240,24 @@ private fun Content(
                             }
                     }
                 },
-                enabled = currentBook.finishedReading == null,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .height(50.dp)
-                    .padding(4.dp)
-                    .weight(50f),
+                    .padding(4.dp),
                 shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colors.primary
-                )
             ) {
                 Text(text = "Update")
             }
 
-            /*RoundReadingButton(
-                label = "Update",
-                radius = 20.dp,
-                onClicked = {
-
-                }
-            )*/
             Spacer(modifier = Modifier.width(100.dp))
-            val openDialog = remember {
-                mutableStateOf(false)
-            }
-            if (openDialog.value) {
+
+
+            // Showing Delete AlertDialog
+            if (viewModel.openDialog.value) {
                 ShowAlertDialog(
                     message = stringResource(id = R.string.sure) + "\n" +
                             stringResource(id = R.string.action),
-                    openDialog
+                    viewModel.openDialog
                 ) {
                     FirebaseFirestore.getInstance()
                         .collection("books")
@@ -267,7 +265,7 @@ private fun Content(
                         .delete()
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
-                                openDialog.value = false
+                                viewModel.openDialog.value = false
                                 /*
                                  Don't popBackStack() if we want the immediate recomposition
                                  of the MainScreen UI, instead navigate to the mainScreen!
@@ -281,12 +279,6 @@ private fun Content(
 
             }
 
-            /*RoundReadingButton(
-                label = "Delete",
-                radius = 10.dp
-            ) {
-                openDialog.value = true
-            }*/
         }
     }
 }
