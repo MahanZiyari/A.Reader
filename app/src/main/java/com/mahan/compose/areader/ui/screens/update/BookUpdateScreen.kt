@@ -25,8 +25,7 @@ import com.mahan.compose.areader.R
 import com.mahan.compose.areader.model.MBook
 import com.mahan.compose.areader.ui.components.HorizontalBookDetail
 import com.mahan.compose.areader.ui.components.InputField
-import com.mahan.compose.areader.ui.components.RoundReadingButton
-import com.mahan.compose.areader.ui.components.SimpleAppBar
+import com.mahan.compose.areader.ui.components.UpdateScreenAppBar
 import com.mahan.compose.areader.ui.navigation.Destination
 import com.mahan.compose.areader.ui.screens.home.HomeScreenViewModel
 import com.mahan.compose.areader.utility.formatDate
@@ -38,6 +37,7 @@ fun BookUpdateScreen(
     navController: NavHostController,
     bookItemId: String,
     viewModel: HomeScreenViewModel = hiltViewModel(),
+    updateScreenViewModel: UpdateScreenViewModel = hiltViewModel(),
 ) {
 
 
@@ -57,17 +57,23 @@ fun BookUpdateScreen(
         }
     }
 
+    updateScreenViewModel.selectedBook.value = book
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            SimpleAppBar(title = "Update Book") {
-                navController.popBackStack()
-            }
+            UpdateScreenAppBar(title = "Update Book",
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onSaveClicked = { /*TODO*/ },
+                onDeleteClicked = {}
+            )
         }
     ) {
-        book?.let {
-            Content(navController = navController, viewModel = viewModel, currentBook = book)
+        updateScreenViewModel.selectedBook.value?.let {
+            Content(navController = navController, viewModel = viewModel, currentBook = it)
         }
     }
 }
@@ -184,10 +190,13 @@ private fun Content(
 
         // -------------
         Spacer(modifier = Modifier.padding(bottom = 15.dp))
-        Row(horizontalArrangement = Arrangement.SpaceEvenly,
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp)) {
+                .padding(6.dp)
+        ) {
 
             val changedNotes = currentBook.notes != bookNoteTextState
             val isFinishedTimeStamp =
@@ -203,28 +212,45 @@ private fun Content(
                 "started_reading_at" to isStartedTimeStamp,
                 "notes" to bookNoteTextState).toMap()
 
-            RoundReadingButton(
-                label = "Update",
-                radius = 20.dp
+            OutlinedButton(
+                onClick = {
+                    if (bookUpdate) {
+                        FirebaseFirestore.getInstance()
+                            .collection("books")
+                            .document(currentBook.id!!)
+                            .update(bookToUpdate)
+                            .addOnCompleteListener {
+                                toastMessage(context, "Book Updated Successfully!")
+                                navController.navigate(route = Destination.HomeScreen.name)
+
+                                // Log.d("Update", "ShowSimpleForm: ${task.result.toString()}")
+
+                            }.addOnFailureListener {
+                                Log.w("Error", "Error updating document", it)
+                            }
+                    }
+                },
+                enabled = currentBook.finishedReading == null,
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(4.dp)
+                    .weight(50f),
+                shape = RoundedCornerShape(10.dp),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colors.primary
+                )
             ) {
-                if (bookUpdate) {
-                    FirebaseFirestore.getInstance()
-                        .collection("books")
-                        .document(currentBook.id!!)
-                        .update(bookToUpdate)
-                        .addOnCompleteListener {
-                            toastMessage(context, "Book Updated Successfully!")
-                            navController.navigate(route = Destination.HomeScreen.name)
-
-                            // Log.d("Update", "ShowSimpleForm: ${task.result.toString()}")
-
-                        }.addOnFailureListener {
-                            Log.w("Error", "Error updating document", it)
-                        }
-                }
-
-
+                Text(text = "Update")
             }
+
+            /*RoundReadingButton(
+                label = "Update",
+                radius = 20.dp,
+                onClicked = {
+
+                }
+            )*/
             Spacer(modifier = Modifier.width(100.dp))
             val openDialog = remember {
                 mutableStateOf(false)
